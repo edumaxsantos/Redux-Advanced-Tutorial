@@ -1,23 +1,23 @@
-import { combineReducers } from "redux";
+import { combineReducers } from 'redux'
 import {
   SELECT_SUBREDDIT,
   INVALIDATE_SUBREDDIT,
   REQUEST_POSTS,
   RECEIVE_POSTS
-} from "./actions";
+} from './actions'
 
-function selectedSubreddit(state = "reactjs", action) {
+function selectedSubreddit(state = 'reactjs', action) {
   switch (action.type) {
     case SELECT_SUBREDDIT:
-      return action.subreddit;
+      return action.subreddit
     default:
-      return state;
+      return state
   }
 }
 
 function posts(
   state = {
-    isFecthing: false,
+    isFetching: false,
     didInvalidate: false,
     items: []
   },
@@ -25,19 +25,23 @@ function posts(
 ) {
   switch (action.type) {
     case INVALIDATE_SUBREDDIT:
-      return { ...state, didInvalidate: true };
+      return Object.assign({}, state, {
+        didInvalidate: true
+      })
     case REQUEST_POSTS:
-      return { ...state, isFecthing: true, didInvalidate: false };
+      return Object.assign({}, state, {
+        isFetching: true,
+        didInvalidate: false
+      })
     case RECEIVE_POSTS:
-      return {
-        ...state,
-        isFecthing: false,
+      return Object.assign({}, state, {
+        isFetching: false,
         didInvalidate: false,
         items: action.posts,
         lastUpdated: action.receivedAt
-      };
+      })
     default:
-      return state;
+      return state
   }
 }
 
@@ -46,18 +50,17 @@ function postsBySubreddit(state = {}, action) {
     case INVALIDATE_SUBREDDIT:
     case RECEIVE_POSTS:
     case REQUEST_POSTS:
-      return {
-        ...state,
+      return Object.assign({}, state, {
         [action.subreddit]: posts(state[action.subreddit], action)
-      };
+      })
     default:
-      return state;
+      return state
   }
 }
 
 const rootReducer = combineReducers({
   postsBySubreddit,
   selectedSubreddit
-});
+})
 
-export default rootReducer;
+export default rootReducer
